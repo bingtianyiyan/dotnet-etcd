@@ -11,7 +11,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/bingtianyiyan/dotnet-etcd</RepositoryUrl>
     <PackageProjectUrl>https://github.com/bingtianyiyan/dotnet-etcd</PackageProjectUrl>
-    <Authors>Shubham Ranjan</Authors>
+    <Authors>ydy</Authors>
     <Company/>
     <Product/>
     <Description>A C# .NET (dotnet) GRPC client for etcd v3+.
@@ -24,6 +24,7 @@
     </Description>
     <PackageTags>etcd grpc etcdv3 etcd3</PackageTags>
     <SignAssembly>false</SignAssembly>
+    <PackageId>dotnet-etcd-core</PackageId>
     <Version>8.0.2</Version>
     <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
