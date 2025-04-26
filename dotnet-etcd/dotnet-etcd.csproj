@@ -2,84 +2,77 @@
 
   <PropertyGroup>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'==''">
-      netstandard2.0;netstandard2.1;netcoreapp2.2;netcoreapp3.1;net5.0;net6.0;net7.0
+      netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0;net7.0;net8.0;net9.0
     </TargetFrameworks>
     <TargetFrameworks Condition="'$(LibraryFrameworks)'!=''">$(LibraryFrameworks)</TargetFrameworks>
     <RootNamespace>dotnet_etcd</RootNamespace>
+    <IncludeGoogleApiCommonProtos>True</IncludeGoogleApiCommonProtos>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <RepositoryUrl>https://github.com/shubhamranjan/dotnet-etcd</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/shubhamranjan/dotnet-etcd</PackageProjectUrl>
-    <PackageReleaseNotesBreaking>
-      Change:
-      - Clients using certs with ssl will break. The lib now accepts a http handler as an argument which users can utilize to manage various aspects of the grpc client like ssl.
-      - Cancellations raise an OperationCanceledException instead of the GRPC's RpcException with a 'Cancelled' StatusCode.
-      This improves integration with the standard .net Tasks. To continue using the legacy RpcException, pass 'useLegacyRpcExceptionForCancellation=true' to the EtcdClient constructor.
-    </PackageReleaseNotesBreaking>
+    <RepositoryUrl>https://github.com/bingtianyiyan/dotnet-etcd</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/bingtianyiyan/dotnet-etcd</PackageProjectUrl>
     <Authors>Shubham Ranjan</Authors>
-    <Company />
-    <Product />
+    <Company/>
+    <Product/>
     <Description>A C# .NET (dotnet) GRPC client for etcd v3+.
 
-etcd is a distributed key value store that provides a reliable way to store data across a cluster of machines. It’s open-source and available on GitHub. etcd gracefully handles leader elections during network partitions and will tolerate machine failure, including the leader.
+      etcd is a distributed key value store that provides a reliable way to store data across a cluster of machines. It’s open-source and available on GitHub. etcd gracefully handles leader elections during network partitions and will tolerate machine failure, including the leader.
 
-Your applications can read and write data into etcd. A simple use-case is to store database connection details or feature flags in etcd as key value pairs. These values can be watched, allowing your app to reconfigure itself when they change.
+      Your applications can read and write data into etcd. A simple use-case is to store database connection details or feature flags in etcd as key value pairs. These values can be watched, allowing your app to reconfigure itself when they change.
 
-Advanced uses take advantage of the consistency guarantees to implement database leader elections or do distributed locking across a cluster of workers.</Description>
+      Advanced uses take advantage of the consistency guarantees to implement database leader elections or do distributed locking across a cluster of workers.
+    </Description>
     <PackageTags>etcd grpc etcdv3 etcd3</PackageTags>
     <SignAssembly>false</SignAssembly>
-    <Version>6.2.0-beta</Version>
+    <Version>8.0.1</Version>
     <AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <PackageIconUrl />
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIconUrl/>
     <PackageIcon>etcd-logo-rectangle.png</PackageIcon>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <PackageReleaseNotes>* Package Updates
-* Bug fixes</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      * Package updates
+      * Minor enhancements and cleanups
+    </PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <AnalysisLevel>5.0-all</AnalysisLevel>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <AssemblyOriginatorKeyFile>..\dotnet-etcd.snk</AssemblyOriginatorKeyFile>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="etcd-logo-rectangle.png" />
-    <None Remove="grpc\proto\google\api\annotations.proto" />
-    <None Remove="LICENSE.md" />
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="etcd-logo-rectangle.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>dotnet-etcd.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="etcd-logo-rectangle.png"/>
+    <None Remove="grpc\proto\google\api\annotations.proto"/>
+    <None Include="..\README.md" Pack="True" PackagePath="\"/>
+    <None Include="etcd-logo-rectangle.png" Pack="True" PackagePath="\"/>
   </ItemGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.21.10" />
-    <PackageReference Include="Grpc.Net.Client" Version="2.50.0" />
-    <PackageReference Include="Grpc.Tools" Version="2.51.0">
+    <PackageReference Include="Google.Api.CommonProtos" Version="2.16.0"/>
+    <PackageReference Include="Google.Protobuf" Version="3.30.1"/>
+    <PackageReference Include="Grpc.Net.Client" Version="2.70.0"/>
+    <PackageReference Include="Grpc.Tools" Version="2.71.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3"/>
 
-    <Protobuf Include="grpc\proto\etcd\auth.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\etcd\election.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\etcd\kv.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\etcd\lock.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\etcd\rpc.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\etcd\version.proto" GrpcServices="Client" />
+    <Protobuf Include="grpc\proto\etcd\auth.proto" GrpcServices="Client"/>
+    <Protobuf Include="grpc\proto\etcd\election.proto" GrpcServices="Client"/>
+    <Protobuf Include="grpc\proto\etcd\kv.proto" GrpcServices="Client"/>
+    <Protobuf Include="grpc\proto\etcd\lock.proto" GrpcServices="Client"/>
+    <Protobuf Include="grpc\proto\etcd\rpc.proto" GrpcServices="Client"/>
+    <Protobuf Include="grpc\proto\etcd\version.proto" GrpcServices="Client"/>
 
-    <Protobuf Include="grpc\proto\gogoproto\gogo.proto" GrpcServices="Client" />
-
-    <Protobuf Include="grpc\proto\google\api\annotations.proto" GrpcServices="Client" />
-    <Protobuf Include="grpc\proto\google\api\http.proto" GrpcServices="Client" />
+    <Protobuf Include="grpc\proto\gogoproto\gogo.proto" GrpcServices="Client"/>
   </ItemGroup>
 
   <ItemGroup>
