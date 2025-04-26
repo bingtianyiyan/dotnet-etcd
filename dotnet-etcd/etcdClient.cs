@@ -6,9 +6,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-#if NET5_0_OR_GREATER
-using System.Threading.Channels;
-#endif
 using dotnet_etcd.interfaces;
 using dotnet_etcd.multiplexer;
 using Etcdserverpb;
@@ -162,12 +159,12 @@ public partial class EtcdClient : IDisposable, IEtcdClient
                 LoadBalancingConfigs = { new RoundRobinConfig() }
             },
 #if NET5_0_OR_GREATER
-            HttpHandler = new SocketsHttpHandler()
-            {
-                KeepAlivePingDelay = TimeSpan.FromSeconds(30),
-                KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
-                KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
-            },
+            //HttpHandler = new SocketsHttpHandler()
+            //{
+            //    KeepAlivePingDelay = TimeSpan.FromSeconds(30),
+            //    KeepAlivePingTimeout = TimeSpan.FromSeconds(30),
+            //    KeepAlivePingPolicy = HttpKeepAlivePingPolicy.Always
+            //},
 #endif
             DisposeHttpClient = true,
             ThrowOperationCanceledOnCancellation = true,
@@ -205,18 +202,21 @@ public partial class EtcdClient : IDisposable, IEtcdClient
                         ? $"{InsecurePrefix}{processedHost}"
                         : $"{SecurePrefix}{processedHost}";
                 }
-                var services = new ServiceCollection();
+                nodes.Add(new Uri(processedHost));
+            }
+            var services = new ServiceCollection();
 #if NET6_0_OR_GREATER
-                var factory = new StaticResolverFactory(addr => nodes.Select(i => new BalancerAddress(i.Host, i.Port)).ToArray());
-                services.AddSingleton<ResolverFactory>(factory);
-                options.ServiceProvider = services.BuildServiceProvider();
-                _channel = GrpcChannel.ForAddress($"{StaticHostsPrefix}{serverName}", options);
+            StaticResolverFactory factory =
+                 new(addr => nodes.Select(i => new BalancerAddress(i.Host, i.Port)).ToArray());
+            services.AddSingleton<ResolverFactory>(factory);
+            options.ServiceProvider = services.BuildServiceProvider();
+
+            _channel = GrpcChannel.ForAddress($"{StaticHostsPrefix}{serverName}", options);
 #else
                 options.ServiceProvider = services.BuildServiceProvider();
                 _channel = GrpcChannel.ForAddress(nodes[0], options);
 #endif
 
-            }
 
             CallInvoker callInvoker = interceptors != null && interceptors.Length > 0
             ? _channel.Intercept(interceptors)
